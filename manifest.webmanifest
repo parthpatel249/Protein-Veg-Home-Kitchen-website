@@ -1,0 +1,29 @@
+{
+  "name": "Protein Veg Home Kitchen",
+  "short_name": "Protein Veg",
+  "description": "Home-cooked vegetarian meals with 30g protein, delivered on schedule in Gandhinagar.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F6F1",
+  "theme_color": "#15803D",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

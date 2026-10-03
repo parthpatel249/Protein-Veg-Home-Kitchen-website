@@ -8,6 +8,13 @@
   const ui = { filter: 'all', mapMeal: 'lunch', auth: { sent: false, phone: '' }, planVariant: 'protein' };
   const ic = (n, cls = '') => `<i data-lucide="${n}" class="${cls}" aria-hidden="true"></i>`;
 
+  /* ---------- install as an app (PWA) ---------- */
+  let installPrompt = null;   // Chrome and Edge hand us this when the site can be installed in one tap
+  const installed = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; });
+  window.addEventListener('appinstalled', () => { installPrompt = null; render(); toast('Installed — find Protein Veg on your home screen'); });
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => { });
+
   /* ---------- helpers ---------- */
   const cartLines = () => Object.entries(S.cart).map(([k, qty]) => { const [id, variant] = k.split('|'); return { key: k, dish: PV.dish(id), variant, qty, price: VARIANTS[variant].oneTime }; });
   const cartCount = () => cartLines().reduce((a, l) => a + l.qty, 0);
@@ -49,6 +56,7 @@
       <img src="assets/img/hero.jpg" alt="" width="800" height="560">
       <div class="hero-txt"><span class="pill">Home-cooked · 100% veg</span><h2>30g protein in every meal.</h2><p>Macros on every box. Delivered in your area’s fixed slot.</p></div>
     </section>
+    ${installed() ? '' : `<button class="install" data-act="install"><img src="assets/icons/icon-192.png" alt=""><span><b>Get the app</b><small>Add Protein Veg to your home screen</small></span><em>Install</em></button>`}
     <a class="why-cta" href="#/why">${ic('sparkles')}<span><b>Why us?</b><small>See where your ${inr(ECON.price)} goes — and why it beats a delivery app</small></span>${ic('chevron-right')}</a>
 
     <section class="block">
@@ -337,7 +345,7 @@
     const sub = S.subs.find(s => s.id === id), o = S.orders.find(x => x.id === id), x = sub || o;
     if (!x) return home();
     const when = sub ? `${SLOTS[sub.slot].label}, ${PV.slotWin(sub.area, sub.slot)} · from ${fmtDate(sub.start)}` : `${fmtDate(o.date)} · ${SLOTS[o.slot].label}, ${PV.slotWin(o.area, o.slot)}`;
-    return `<section class="done"><div class="tick">${ic('check')}</div><h1>${sub ? 'Plan confirmed' : 'Order confirmed'}</h1><p>${when}</p><p class="fine">${sub ? 'Plan' : 'Order'} #${esc(id)} · paid ${inr(sub ? sub.paid : o.total)}</p>
+    return `<section class="success"><div class="tick">${ic('check')}</div><h1>${sub ? 'Plan confirmed' : 'Order confirmed'}</h1><p>${when}</p><p class="fine">${sub ? 'Plan' : 'Order'} #${esc(id)} · paid ${inr(sub ? sub.paid : o.total)}</p>
       <div class="wa"><small>WhatsApp preview</small><p>Hi ${esc(x.name.split(' ')[0])}, your ${sub ? esc(PV.plan(sub.planId).name) + ' plan' : 'order'} is confirmed. ${sub ? 'We will send the menu each morning.' : 'We will message you when the rider leaves the kitchen.'} Reply PAUSE before 9 PM to skip a day.</p></div>
       <a class="btn block-btn" href="#/orders">Track ${sub ? 'my plan' : 'my order'}</a><a class="btn ghost block-btn" href="#/home">Back to home</a></section>`;
   }
@@ -418,6 +426,11 @@
       openSheet(`<h2>Cancel this plan?</h2>${within ? `<p class="sub">You are within the first 5 days, so unused days are refunded minus a ₹200 fee.</p><div class="bill"><div><span>${inf.left} unused days × ${inr(per)} paid</span><b>${inr(inf.left * per)}</b></div><div><span>Cancellation fee</span><b>−₹200</b></div><div class="tot"><span>Refund</span><b>${inr(refund)}</b></div></div>` : `<p class="sub">${p.id === 'trial' ? 'The 3-day trial is not refundable.' : 'The first 5 days have passed, so there is no refund.'} You can pause days instead and keep every meal you paid for.</p>`}
         <button class="btn block-btn" data-act="closeSheet">Keep my plan</button><button class="btn danger block-btn" data-act="confirmCancel" data-id="${s.id}">Cancel plan${within ? ` and refund ${inr(refund)}` : ''}</button>`);
     },
+    install() {
+      const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), local = !location.protocol.startsWith('http');
+      const steps = ios ? ['Tap the <b>Share</b> button in Safari', 'Choose <b>Add to Home Screen</b>', 'Tap <b>Add</b>'] : ['Open the browser menu <b>⋮</b>', 'Tap <b>Install app</b> or <b>Add to Home screen</b>', 'Tap <b>Install</b>'];
+      openSheet(`<h2>Add to your home screen</h2><p class="sub">${local ? 'Installing works once the site is opened from its web address (https), not from a file on this computer.' : ios ? 'On iPhone, Safari adds the app in three taps.' : 'Your browser adds the app from its menu.'}</p><ol class="howto">${steps.map(t => `<li><span>${t}</span></li>`).join('')}</ol><button class="btn block-btn" data-act="closeSheet">Got it</button>`);
+    },
     replace(key) {
       openSheet(`<h2>Start a new cart?</h2><p class="sub">Breakfast meals and lunch or dinner meals are cooked and delivered in different slots, so they need separate orders.</p><button class="btn block-btn" data-act="replaceCart" data-k="${key}">Clear cart and add this</button><button class="btn ghost block-btn" data-act="closeSheet">Keep my cart</button>`);
     },
@@ -429,6 +442,13 @@
   const afterAuth = () => { ui.auth = { sent: false, phone: '' }; closeSheet(); if (flow && flow.step === 2) flow.step = 3; render(); };
   const act = {
     closeSheet,
+    install: async () => {
+      if (!installPrompt) return sheets.install();
+      installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      installPrompt = null;
+      if (outcome !== 'accepted') toast('No problem — the button stays here if you change your mind');
+    },
     pickArea: () => sheets.area(),
     setArea: e => { S.area = e.id; PV.save(); closeSheet(); if (!PV.zoneOf(e.id).open) sheets.waitlist(e.id); },
     setVariant: e => { S.variant = e.v; PV.save(); },

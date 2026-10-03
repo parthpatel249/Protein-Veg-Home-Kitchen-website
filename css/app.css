@@ -45,6 +45,7 @@ svg.lucide { width: 1.15em; height: 1.15em; flex: none; vertical-align: -.2em; s
 .block-h { display: flex; align-items: baseline; justify-content: space-between; margin: 4px 0 12px; }
 .block-h h2 { font-size: 19px; font-weight: 800; } .block-h h2 small { font-size: 13px; font-weight: 600; color: var(--mut); margin-left: 6px; }
 .block-h a { font-size: 13px; font-weight: 700; color: var(--g); min-height: 44px; display: inline-flex; align-items: center; }
+.block > * + .block-h { margin-top: 24px; }
 .block-h + .seg, .block .seg { margin-bottom: 12px; }
 .sub { color: var(--mut); margin: 4px 0 14px; }
 .fine { font-size: 12.5px; color: var(--mut); margin: 12px 0; } .fine .err, .err { color: var(--red); font-weight: 700; }
@@ -93,6 +94,11 @@ svg.lucide { width: 1.15em; height: 1.15em; flex: none; vertical-align: -.2em; s
 @keyframes shine { 60%, 100% { transform: translateX(100%); } }
 .why-cta > svg:first-child { width: 26px; height: 26px; } .why-cta span { flex: 1; }
 .why-cta b { display: block; font-size: 17px; font-weight: 800; } .why-cta small { font-size: 12.5px; font-weight: 600; }
+.install { display: flex; align-items: center; gap: 12px; width: calc(100% - 32px); margin: 12px 16px 0; padding: 12px 14px; border-radius: var(--r); background: var(--ink); color: #fff; text-align: left; box-shadow: 0 8px 22px rgba(19, 32, 26, .28); }
+.install img { width: 42px; height: 42px; border-radius: 11px; flex: none; } .install span { flex: 1; } .install b { display: block; font-size: 15.5px; font-weight: 800; } .install small { font-size: 12.5px; color: #C5D3CA; }
+.install em { font-style: normal; font-weight: 800; font-size: 13px; background: var(--amber); color: #2A1B00; padding: 8px 14px; border-radius: 99px; animation: nudge 2.4s ease-in-out infinite; } @keyframes nudge { 0%, 80%, 100% { transform: scale(1); } 90% { transform: scale(1.08); } }
+.howto { list-style: none; padding: 0; counter-reset: n; display: grid; gap: 10px; margin: 6px 0 14px; } .howto li { counter-increment: n; display: flex; gap: 12px; align-items: center; background: var(--card); border-radius: var(--r-s); padding: 12px 14px; font-size: 14px; box-shadow: var(--sh); }
+.howto li::before { content: counter(n); width: 28px; height: 28px; border-radius: 50%; background: var(--g); color: #fff; font-weight: 800; display: grid; place-items: center; flex: none; }
 .rail { display: flex; gap: 10px; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 10px; scroll-padding-inline: 16px; scroll-snap-type: x proximity; scrollbar-width: none; } .rail::-webkit-scrollbar { display: none; }
 .pchip { position: relative; flex: none; width: 210px; scroll-snap-align: start; padding: 14px; border-radius: var(--r); background: var(--card); box-shadow: var(--sh); border-top: 4px solid var(--g); display: grid; gap: 3px; }
 .pchip.amber { border-color: var(--amber); background: var(--amber-50); } .pchip.blue { border-color: var(--blue); }
@@ -202,7 +208,7 @@ svg.lucide { width: 1.15em; height: 1.15em; flex: none; vertical-align: -.2em; s
 .addmore { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px; color: var(--g); font-weight: 700; font-size: 14px; }
 .bill { background: var(--card); border-radius: var(--r); padding: 6px 14px; box-shadow: var(--sh); margin: 12px 0; } .bill div { display: flex; justify-content: space-between; padding: 9px 0; font-size: 14px; } .bill span { color: var(--mut); }
 .bill .tot { border-top: 1px dashed var(--line); font-size: 17px; font-weight: 800; } .bill .tot span { color: var(--ink); } .bill .free, .bill .save b, .bill .save span { color: var(--g); font-weight: 700; }
-.steps { list-style: none; display: flex; padding: 6px 16px 14px; gap: 6px; } .steps em { font-style: normal; } .steps li { flex: 1; font-size: 11.5px; font-weight: 700; color: var(--mut); display: flex; flex-direction: column; gap: 5px; align-items: flex-start; border-top: 3px solid #D8DFD6; padding-top: 7px; }
+.steps { list-style: none; display: flex; padding: 6px 16px 4px; gap: 6px; } .steps em { font-style: normal; } .steps li { flex: 1; font-size: 11.5px; font-weight: 700; color: var(--mut); display: flex; flex-direction: column; gap: 5px; align-items: flex-start; border-top: 3px solid #D8DFD6; padding-top: 7px; }
 .steps span { width: 22px; height: 22px; border-radius: 50%; background: #D8DFD6; color: var(--mut); display: grid; place-items: center; font-size: 11.5px; } .steps svg { width: 13px; height: 13px; stroke-width: 3.5; }
 .steps .on { color: var(--ink); border-color: var(--g); } .steps .on span, .steps .done span { background: var(--g); color: #fff; } .steps .done { border-color: var(--g); color: var(--g-d); }
 .field { display: grid; gap: 6px; margin: 12px 0; } .field > span { font-size: 13px; font-weight: 700; } .field span small { font-weight: 500; color: var(--mut); } .field > small { font-size: 12.5px; color: var(--mut); }
@@ -223,7 +229,7 @@ svg.lucide { width: 1.15em; height: 1.15em; flex: none; vertical-align: -.2em; s
 .methods label.on { border-color: var(--g); background: var(--g-50); } .methods input { position: absolute; opacity: 0; } .methods b { display: block; font-size: 14.5px; } .methods small { color: var(--mut); font-size: 12px; }
 .mlogo { width: 38px; height: 38px; border-radius: 10px; background: #E6EBE4; display: grid; place-items: center; }
 .methods label:focus-within { outline: 3px solid var(--blue); outline-offset: 2px; }
-.v-done { display: grid; min-height: 100dvh; } .done { text-align: center; padding: 56px 24px; align-self: center; } .done h1 { font-size: 26px; font-weight: 800; margin: 18px 0 6px; } .done > p { color: var(--mut); }
+.v-done { display: grid; min-height: 100dvh; } .success { text-align: center; padding: 56px 24px; align-self: center; } .success h1 { font-size: 26px; font-weight: 800; margin: 18px 0 6px; } .success > p { color: var(--mut); }
 .tick { width: 84px; height: 84px; margin: 0 auto; border-radius: 50%; background: var(--g); color: #fff; display: grid; place-items: center; animation: pop .45s cubic-bezier(.2, 1.6, .4, 1); } .tick svg { width: 42px; height: 42px; stroke-width: 3; }
 @keyframes pop { from { transform: scale(.3); opacity: 0; } }
 .wa { text-align: left; background: #E7F8DC; border-radius: 4px 16px 16px 16px; padding: 12px 14px; margin: 22px 0 14px; font-size: 13.5px; } .wa small { display: block; font-weight: 800; color: #2E6B1F; font-size: 11.5px; text-transform: uppercase; margin-bottom: 4px; }
